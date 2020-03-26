@@ -9,7 +9,7 @@ GAME RULES:
 
 */
 
-var scores, roundScore, acttivePlayer, dice, isGamePlaying;
+var scores, roundScore, acttivePlayer, dice, isGamePlaying, preScore , currentScore , scoreStore , winScore;
 
 init();
 
@@ -18,11 +18,28 @@ document.querySelector('.btn-roll').addEventListener('click',function(){
     {
     dice = Math.floor(Math.random()*6)+1;
     console.log(dice);
+    scoreStore.push(dice);
+    console.log(scoreStore);
+
+    if(scoreStore.length === 1){
+        preScore = scoreStore[0];
+        currentScore = scoreStore [0];
+        console.log("pre1" , preScore);
+        console.log("cur1" , currentScore);
+    }else{
+        currentScore = scoreStore[scoreStore.length-1];
+        preScore = scoreStore[scoreStore.length-2];
+        
+        
+    }
+    console.log("pre" , preScore);
+    console.log("cur" , currentScore);
+
     var diceDOM = document.querySelector(".dice");
     diceDOM.style.display = 'block';
     diceDOM.src = "dice-"+dice+".png";
     // document.querySelector("#current-"+acttivePlayer).textContent = dice;
-    if(dice !== 1){
+    if(dice !== 1 || (currentScore === 6 && preScore === 6)){
         roundScore += dice;
         document.getElementById("current-"+acttivePlayer).textContent = roundScore;
     }else{
@@ -37,7 +54,7 @@ document.querySelector('.btn-hold').addEventListener('click',function(){
     scores[acttivePlayer] += roundScore;
     document.getElementById("score-"+acttivePlayer).textContent = scores[acttivePlayer];
     }
-    if (scores[acttivePlayer] >= 20){
+    if (scores[acttivePlayer] >= winScore){
         //winner
         document.querySelector(".dice").style.display = 'none';
       
@@ -53,6 +70,7 @@ document.querySelector('.btn-hold').addEventListener('click',function(){
 
 function setNextPlayer(){
     document.getElementById("current-"+acttivePlayer).textContent = 0;
+        scoreStore = []
         acttivePlayer === 0? acttivePlayer =1 :acttivePlayer=0;
         roundScore = 0;
         document.querySelector(".dice").style.display = 'none';
@@ -64,10 +82,14 @@ document.querySelector(".btn-new").addEventListener('click',init);
 
 function init(){
 
+winScore = prompt("Enter Win Score")
 isGamePlaying = true
 scores = [0,0];
 roundScore = 0;
 acttivePlayer = 0;
+preScore = 0;
+currentScore = 0;
+scoreStore = []
 document.querySelector(".dice").style.display = 'none';
 document.getElementById("score-0").textContent = 0;
 document.getElementById("score-1").textContent = 0;
